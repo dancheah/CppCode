@@ -6,3 +6,4 @@ cmake_install.cmake
 *.exe
 build/
 a.out
+Makefile
