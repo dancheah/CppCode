@@ -12,7 +12,7 @@ add_executable(hello src/hello.cpp)
 # set (CMAKE_INCLUDE_PATH /opt/personal/pkg/boost/include)
 # set (CMAKE_LIBRARY_PATH /opt/personal/pkg/boost/lib)
 
-find_package( Boost 1.46.1 COMPONENTS program_options )
+find_package( Boost 1.46.1 REQUIRED COMPONENTS program_options )
 
 if(Boost_FOUND)
     # Build statically so I don't have to set DYLD_LIBRARY_PATH
