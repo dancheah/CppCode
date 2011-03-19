@@ -9,6 +9,8 @@ const unsigned int MAXV = 100;
 const unsigned int MAXDEGREE = 50;
 using namespace std;
 
+enum color { red, black };
+
 /**
  * An adjancency list representation of a graph.
  */
@@ -61,7 +63,7 @@ public:
 
     void print_graph() {
         for (int i = 0; i < nvertices; i++) {
-            cout << i << ":";
+            cout << i << "(" << coloring[i] << ") :";
             for (int j = 0; j < degree[i]; j++) {
                 cout << " " <<  edges[i][j];
             }
@@ -76,6 +78,12 @@ public:
     bool discovered[MAXV];
     int parent[MAXV];
     bool finished;
+    bool bicolorable;
+    color coloring[MAXV];
+
+    /**
+     * For solving the bicoloring problem
+     */
 
     /**
      * Initialize the various state used for
@@ -87,6 +95,9 @@ public:
             processed[i]  = false;
             discovered[i] = false;
             parent[i] = -1;
+            coloring[i] = red;
+            finished = false;
+            bicolorable = true;
         }
     }
 
@@ -101,7 +112,7 @@ public:
         for (int i = 0; i < degree[v]; i++) {
             int successor_vertex = edges[v][i];
             if (valid_edge(edges[v][i])) {
-                if (!discovered[v]) {
+                if (!discovered[successor_vertex]) {
                     // This vertex was not discovered before.
                     parent[successor_vertex] = v;
                     dfs(successor_vertex);
@@ -112,8 +123,9 @@ public:
                 }
             }
 
-            if (finished) 
+            if (finished) {
                 return;
+            }
         }
 
         processed[v] = true;
@@ -121,15 +133,34 @@ public:
 
     void process_vertex(int v) 
     {
-        cout << "Processed vertex " << v << endl; 
+        //cout << "Processed vertex " << v << endl; 
     }
 
     void process_edge(int x, int y)
     {
         if (parent[x] == y) {
-            cout << "Processed tree edge " << x << ", " << y << endl;
+            //cout << "Processed tree edge " << x << ", " << y << endl;
+
+            if (coloring[parent[x]] == red) {
+                coloring[x] = black;
+            } else if (coloring[parent[x]] == black) {
+                coloring[x] = red;
+            }
+
         } else {
-            cout << "Processed back edge " << x << ", " << y << endl;
+            //cout << "Processed back edge " << x << ", " << y << endl;
+
+            if (coloring[parent[x]] == red) {
+                coloring[x] = black;
+            } else if (coloring[parent[x]] == black) {
+                coloring[x] = red;
+            }
+
+            if (coloring[x] == coloring[y]) {
+                //cout << "Cannot bicolor graph" << endl;
+                bicolorable = false;
+                finished = true;
+            }
         }
     }
 
@@ -137,8 +168,21 @@ public:
     {
         return true;
     }
+
+    bool print_bicolorable()
+    {
+        if (bicolorable) {
+            cout << "BICOLORABLE." << endl;
+        } else {
+            cout << "NOT BICOLORABLE." << endl;
+        }
+    }
 }; 
 
+/**
+ * Assumption is that the graphs are
+ * connected, undirected and no self loops.
+ */
 int main(int argc, char** argv)
 {
     if (argc > 1) {
@@ -165,11 +209,13 @@ int main(int argc, char** argv)
                 g.insert_edge(x,y);
             }
 
-            g.print_info();
-            g.print_graph();
-
             g.intialize_search();
             g.dfs(0);
+
+            //g.print_info();
+            //g.print_graph();
+            g.print_bicolorable();
+
         }
 
         ifs.close();
