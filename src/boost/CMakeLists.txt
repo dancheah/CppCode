@@ -21,9 +21,10 @@ if(Boost_FOUND)
     # Setup the include dir for boost
     include_directories(${Boost_INCLUDE_DIRS})
 
-    # Build boost_hello
     add_executable(boost_hello src/boost_hello.cpp)
     target_link_libraries(boost_hello ${Boost_LIBRARIES})
+
+    add_executable(scoped_ptr src/scoped_ptr.cpp)
 endif()
 
 # vim: sts=4 sw=4 ts=4 et ft=cmake
