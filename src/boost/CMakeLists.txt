@@ -6,6 +6,7 @@ set (CMAKE_RUNTIME_OUTPUT_DIRECTORY build)
 
 # Various programs
 add_executable(hello src/hello.cpp)
+add_executable(mem_fun src/mem_fun.cpp)
 
 # These can be set via env variables to the location of
 # the boost library
